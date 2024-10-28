@@ -3,6 +3,7 @@
 import React from "react";
 import Login from "./login/page";
 import SignUp from "./signup/page";
+import { ThemeSwitcher } from "./components/theme-switcher";
 import { APP_CONSTANTS } from "@/app/lib/constants";
 import { useTheme } from "next-themes";
 
@@ -15,6 +16,7 @@ export default function Page() {
       <header className="w-full py-4 px-6 border-b border-divider">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-2xl font-bold">{APP_CONSTANTS["APP_NAME"]}</h1>
+          <ThemeSwitcher />
         </div>
       </header>
 
