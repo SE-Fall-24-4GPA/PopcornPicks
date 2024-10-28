@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -18,26 +19,19 @@ export const metadata: Metadata = {
   description: "Created by Jayesh Gajbhar, Swapnil Jakhi and Skanda Shastry",
 };
 
+
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0"
-        />
-        <title>Popcorn Picks</title>
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
-  );
+  )
 }

@@ -1,0 +1,30 @@
+/* Center the main login container on the page */
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Style the inner container for better structure */
+.login-container {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* Style the form container to provide spacing */
+.login-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Space out the input containers */
+.email-container,
+.password-container {
+    width: 100%;
+}
