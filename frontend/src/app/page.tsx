@@ -7,6 +7,7 @@ import { ThemeSwitcher } from "./components/theme-switcher";
 import { APP_CONSTANTS } from "@/app/lib/constants";
 import { useTheme } from "next-themes";
 import LandingPage from "./landing/page";
+import ProfilePage from "./profile/page";
 
 export default function Page() {
   const { theme } = useTheme();
@@ -24,7 +25,7 @@ export default function Page() {
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          <LandingPage />
+          <ProfilePage />
         </div>
       </main>
 
