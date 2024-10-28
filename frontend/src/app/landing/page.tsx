@@ -14,7 +14,7 @@ export default function LandingPage() {
   return (
     <>
       {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center p-6 text-center">
+      <main className="flex-grow flex">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-4">
             <h2 className="text-4xl font-bold">

@@ -9,7 +9,11 @@ const config: Config = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'bg-background': "url('./public/movie_collage.jpg')",
+      }
+    },
   },
   darkMode: "class",
   plugins: [
@@ -34,6 +38,7 @@ const config: Config = {
               DEFAULT: "#DD62ED",
               foreground: "#ffffff",
             },
+            
             // ... you can add other colors here
           },
           layout: {

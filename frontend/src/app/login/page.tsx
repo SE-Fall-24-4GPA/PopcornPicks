@@ -68,7 +68,9 @@ export default function Login() {
   };
 
   return (
-    <Card className="max-w-md w-full px-4 py-6 shadow-xl">
+    <>
+    
+    <Card className="max-w-md w-full px-4 py-6 shadow-xl justify-center align-center">
       <CardHeader className="flex flex-col gap-3">
         <h1 className="text-2xl font-bold text-center">Welcome Back</h1>
         <p className="text-sm text-default-500 text-center">
@@ -143,5 +145,6 @@ export default function Login() {
         </p>
       </CardFooter>
     </Card>
+    </>
   );
 }
