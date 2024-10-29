@@ -1,5 +1,6 @@
 import { APP_CONSTANTS } from "../lib/constants";
-import SignOut from './signout';
+import SignOut from "./signout";
+import { AuthGuard } from "./auth/AuthGuard";
 
 export default function Header() {
   return (
@@ -8,7 +9,9 @@ export default function Header() {
         <h1 className="text-2xl font-bold text-white">
           {APP_CONSTANTS["APP_NAME"]}
         </h1>
-        <SignOut />
+        
+          <SignOut />
+
       </div>
     </header>
   );
