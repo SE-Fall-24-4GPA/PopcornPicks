@@ -1,3 +1,4 @@
+'use client';
 import { FOOTER_LINKS } from "../lib/constants";
 
 export default function Footer() {

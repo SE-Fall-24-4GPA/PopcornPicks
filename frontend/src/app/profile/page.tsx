@@ -50,7 +50,7 @@ export default function ProfilePage() {
       <div className="container max-w-3xl mx-auto space-y-8">
         {/* User's Reviewed Movies */}
         <section className="bg-gray-100 p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Your Reviewed Movies</h2>
+          <h2 className="text-2xl font-bold mb-4 text-black">Your Reviewed Movies</h2>
           <ul className="space-y-2">
             {userMovies.map((movie, index) => (
               <li key={index} className="text-lg">"Movie Name" {
@@ -64,7 +64,7 @@ export default function ProfilePage() {
 
         {/* Friends List with Recent Movies */}
         <section className="bg-gray-100 p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Your Friends</h2>
+          <h2 className="text-2xl font-bold mb-4 text-black">Your Friends</h2>
           <ul className="space-y-4">
             {friendsList.map((friend, index) => (
               <li key={index} className="relative">
