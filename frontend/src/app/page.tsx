@@ -41,7 +41,7 @@ export default function Page() {
         {/* Main Content */}
         <main className="flex-grow flex items-center justify-center p-6">
           <div className="w-full">
-            <LandingPage />
+            <ReviewPage />
           </div>
         </main>
 
