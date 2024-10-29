@@ -36,7 +36,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="w-full"
-              onClick={() => router.push("/get-started")}
+              onClick={() => router.push("/search")}
               color="primary"
             >
               Get Started!
