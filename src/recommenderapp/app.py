@@ -7,6 +7,7 @@ This code is licensed under MIT license (see LICENSE for details)
 # pylint: disable=wrong-import-position
 # pylint: disable=wrong-import-order
 # pylint: disable=import-error
+from src.prediction_scripts.item_based import recommend_for_new_user
 import json
 import sys
 import os
@@ -30,7 +31,6 @@ from utils import (
 from search import Search
 
 sys.path.append("../../")
-from src.prediction_scripts.item_based import recommend_for_new_user
 
 sys.path.remove("../../")
 
@@ -114,7 +114,8 @@ def predict():
             training_data.append(movie_with_rating)
     recommendations, genres, imdb_id = recommend_for_new_user(training_data)
     recommendations, genres, imdb_id = recommendations[:10], genres[:10], imdb_id[:10]
-    resp = {"recommendations": recommendations, "genres": genres, "imdb_id": imdb_id}
+    resp = {"recommendations": recommendations,
+            "genres": genres, "imdb_id": imdb_id}
     return resp
 
 
@@ -260,6 +261,20 @@ def success():
     Renders the success page.
     """
     return render_template("success.html")
+
+
+@app.route("/search", methods=["POST"])
+def search_movies():
+    search_instance = Search()
+    data = request.get_json()
+    query = data.get('q', '').strip()
+
+    if not query:
+        return jsonify([]), 200  # Return empty list for empty query
+
+    # Get top 10 search results
+    results = search_instance.results_top_ten(query)
+    return jsonify(results), 200
 
 
 @app.before_request

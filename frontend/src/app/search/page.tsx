@@ -99,7 +99,7 @@ export default function SearchPage() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('/api/predict', {
+      const response = await fetch('http://localhost:3000/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
