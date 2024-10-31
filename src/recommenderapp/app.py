@@ -29,6 +29,7 @@ from utils import (
     get_recent_friend_movies,
 )
 from search import Search
+from utils import get_friends
 
 sys.path.append("../../")
 
@@ -276,6 +277,12 @@ def search_movies():
     results = search_instance.results_top_ten(query)
     return jsonify(results), 200
 
+@app.route("/getFriends", methods=["GET"])
+def get_friends():
+    """
+    Gets the friends of the active user
+    """
+    return get_friends(g.db, user[1])
 
 @app.before_request
 def before_request():
