@@ -212,17 +212,24 @@ def add_friend(db, username, user_id):
     Utility function for adding a friend
     """
     executor = db.cursor()
-    executor.execute("SELECT idUsers FROM Users WHERE username = %s;", [username])
-    friend_id = executor.fetchall()[0][0]
-    executor.execute(
-        "INSERT INTO Friends(idUsers, idFriend) VALUES (%s, %s);",
-        (int(user_id), int(friend_id)),
-    )
-    executor.execute(
-        "INSERT INTO Friends(idUsers, idFriend) VALUES (%s, %s);",
-        (int(friend_id), int(user_id)),
-    )
-    db.commit()
+
+    # Fetch friend_id with parameterized query
+    executor.execute("SELECT idUsers FROM Users WHERE username = %s;", (username,))
+    result = executor.fetchone()
+
+    if result:
+        friend_id = result[0]
+        executor.execute(
+            "INSERT INTO Friends(idUsers, idFriend) VALUES (%s, %s);",
+            (user_id, friend_id),
+        )
+        executor.execute(
+            "INSERT INTO Friends(idUsers, idFriend) VALUES (%s, %s);",
+            (friend_id, user_id),
+        )
+        db.commit()
+    else:
+        raise ValueError("Friend not found in the database")
 
 
 def login_to_account(db, username, password):
