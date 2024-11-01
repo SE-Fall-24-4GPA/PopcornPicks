@@ -29,7 +29,7 @@ export default function WallPage() {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch('/api/reviews');
+      const response = await fetch('http://localhost:5000/reviews');
       const data = await response.json();
       setReviews(data);
       setLoading(false);
@@ -44,13 +44,14 @@ export default function WallPage() {
     }
   };
 
-  const ReviewCard = ({ review : any }) => (
+  const ReviewCard = ({ review }) => (
+    
     <Card className="w-full mb-4">
       <CardHeader className="flex justify-between items-center">
         <div>
-          <h3 className="text-xl font-bold">{review.movie}</h3>
+          <h3 className="text-xl font-bold">{review.name}</h3>
           <p className="text-small text-default-500">
-            Reviewed by {review.username} • {new Date(review.date).toLocaleDateString()}
+            Reviewed by {review.username} • {new Date(review.time).toLocaleDateString()}
           </p>
         </div>
         <div className="flex gap-1">

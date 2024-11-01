@@ -251,19 +251,27 @@ def login_to_account(db, username, password):
 
 def submit_review(db, user, movie, score, review):
     """
-    Utility function for creating a dictionary for submitting a review
+    Utility function for submitting a movie review to the database.
     """
-    executor = db.cursor()
-    executor.execute("SELECT idMovies FROM Movies WHERE name = %s", [movie])
-    movie_id = executor.fetchall()[0][0]
-    d = datetime.datetime.utcnow()
-    timestamp = d.strftime("%Y-%m-%d %H:%M:%S")
-    executor.execute(
-        "INSERT INTO Ratings(user_id, movie_id, score, review, time) \
-                        VALUES (%s, %s, %s, %s, %s);",
-        (int(user), int(movie_id), int(score), str(review), timestamp),
-    )
-    db.commit()
+    with db.cursor() as executor:
+        # Check if the movie exists
+        executor.execute("SELECT idMovies FROM Movies WHERE name = %s", [movie])
+        result = executor.fetchone()
+        
+        if not result:
+            raise ValueError("Movie not found")
+        
+        movie_id = result[0]
+        timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Insert review into Ratings table
+        executor.execute(
+            "INSERT INTO Ratings (user_id, movie_id, score, review, time) VALUES (%s, %s, %s, %s, %s);",
+            (user, movie_id, score, review, timestamp)
+        )
+        db.commit()
+        
+    return f"Review for '{movie}' submitted successfully"
 
 
 def get_wall_posts(db):

@@ -33,6 +33,7 @@ export default function SignUp() {
     password: "",
     confirmPassword: "",
   });
+  const [successMessage, setSuccessMessage] = useState("");
 
   const validateForm = () => {
     let isValid = true;
@@ -78,14 +79,36 @@ export default function SignUp() {
 
     if (validateForm()) {
       try {
-        // Add your signup API call here
-        console.log("Form submitted:", formData);
+        const response = await fetch("http://localhost:5000/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            username: formData.name, // Sending name as username
+            password: formData.password,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Signup successful:", data.message);
+          setSuccessMessage(data.message);
+          setTimeout(() => {
+            setSuccessMessage(""); // Clear success message
+          }, 2000);
+          // Optionally redirect or show success message
+        } else {
+          const errorData = await response.json();
+          setErrors({ ...errors, email: errorData.error || "Signup failed. Please try again." });
+        }
       } catch (error) {
         console.error("Signup error:", error);
+        setErrors({ ...errors, email: "An unexpected error occurred. Please try again later." });
       }
     }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -103,6 +126,11 @@ export default function SignUp() {
         </p>
       </CardHeader>
       <CardBody>
+        {successMessage && (
+          <div className="mb-4 p-2 bg-green-100 text-green-700 border border-green-300 rounded">
+            {successMessage} {/* Display success message */}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
             type="name"

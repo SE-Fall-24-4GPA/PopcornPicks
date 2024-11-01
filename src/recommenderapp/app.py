@@ -14,6 +14,7 @@ import os
 from flask import Flask, jsonify, render_template, request, g
 from flask_cors import CORS
 import mysql.connector
+import pickle
 from dotenv import load_dotenv
 # from utils import (
 #     beautify_feedback_data,
@@ -32,7 +33,12 @@ from utils import get_friends
 from utils import get_username
 from utils import get_recent_movies
 from utils import add_friend
+from utils import get_wall_posts
+from utils import submit_review
+from utils import create_account
 from search import Search
+from item_based import recommend_for_new_user
+search_instance = Search()
 
 
 sys.path.append("../../")
@@ -116,7 +122,63 @@ def add_friend_route():
     except Exception as e:
         print(f"Error adding friend: {e}")
         return jsonify({"error": "Could not add friend"}), 500
+    
+@app.route("/search", methods=["POST"])
+def search_movies():
+    data = request.get_json()
+    query = data.get("q", "")
 
+    if not query:
+        return jsonify({"error": "Empty query"}), 400
+
+    # Get top 10 search results
+    results = search_instance.results_top_ten(query)
+    return jsonify(results), 200
+
+
+@app.route("/reviews", methods=["GET"])
+def wall_posts():
+    return get_wall_posts(g.db)
+
+
+@app.route("/review", methods=["POST"])
+def review():
+    data = request.get_json()
+    
+    # Check if the required data is present
+    if not data or "movie" not in data or "score" not in data or "review" not in data:
+        return jsonify({"error": "Invalid or incomplete data"}), 400
+    
+    # Replace with the actual user ID or context as needed
+    user_id = 1  # Example user ID, replace with actual session or request context
+    
+    try:
+        # Submit the review using the provided data
+        submit_review(g.db, user_id, data["movie"], data["score"], data["review"])
+        return jsonify({"message": "Review submitted successfully"}), 201
+    except Exception as e:
+        print(f"Error submitting review: {e}")
+        return jsonify({"error": "Could not submit review"}), 500
+
+
+@app.route("/signup", methods=["POST"])
+def create_acc():
+    """
+    Handles creating a new account
+    """
+    data = request.get_json()
+
+    # Validate the input data
+    if not data or "email" not in data or "username" not in data or "password" not in data:
+        return jsonify({"error": "Invalid or incomplete data"}), 400
+
+    try:
+        create_account(g.db, data["email"], data["username"], data["password"])
+        return jsonify({"message": "Sign up is successful"}), 200
+    except Exception as e:
+        # Log the exception for debugging purposes
+        app.logger.error(f"Error creating account: {str(e)}")
+        return jsonify({"error": "An entry with this username or email already exists, Please try with different username."}), 500
 
 
 if __name__ == "__main__":
