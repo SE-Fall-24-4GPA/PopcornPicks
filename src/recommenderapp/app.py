@@ -10,6 +10,7 @@ This code is licensed under MIT license (see LICENSE for details)
 import json
 import sys
 import os
+import pickle
 from flask import Flask, jsonify, render_template, request, g
 from flask_cors import CORS
 import mysql.connector
@@ -37,6 +38,9 @@ sys.path.remove("../../")
 
 app = Flask(__name__)
 app.secret_key = "secret key"
+
+movies = pickle.load(open('artifacts/movie_list.pkl', 'rb'))
+similarity = pickle.load(open('artifacts/similarity.pkl', 'rb'))
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 user = {1: None}
@@ -105,17 +109,43 @@ def predict():
     """
     Predicts movie recommendations based on user ratings.
     """
+    # data = json.loads(request.data)
+    # data1 = data["movie_list"]
+    # training_data = []
+    # for movie in data1:
+    #     movie_with_rating = {"title": movie, "rating": 5.0}
+    #     if movie_with_rating not in training_data:
+    #         training_data.append(movie_with_rating)
+    # recommendations, genres, imdb_id = recommend_for_new_user(training_data)
+    # recommendations, genres, imdb_id = recommendations[:10], genres[:10], imdb_id[:10]
+    # resp = {"recommendations": recommendations, "genres": genres, "imdb_id": imdb_id}
+    # return resp
+
+    """
+    Recommends movies similar to the one provided by the user.
+    """
     data = json.loads(request.data)
-    data1 = data["movie_list"]
-    training_data = []
-    for movie in data1:
-        movie_with_rating = {"title": movie, "rating": 5.0}
-        if movie_with_rating not in training_data:
-            training_data.append(movie_with_rating)
-    recommendations, genres, imdb_id = recommend_for_new_user(training_data)
-    recommendations, genres, imdb_id = recommendations[:10], genres[:10], imdb_id[:10]
-    resp = {"recommendations": recommendations, "genres": genres, "imdb_id": imdb_id}
-    return resp
+    movie = data["movie"]
+    
+    # Find the index of the movie in the movies DataFrame
+    index = movies[movies['title'] == movie].index[0]
+    distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
+    
+    # Prepare recommendations based on similarity
+    recommended_movie_names = []
+    recommended_movie_posters = []
+    for i in distances[1:6]:  # Skip the first one because it will be the same movie
+        movie_id = movies.iloc[i[0]].movie_id
+        # recommended_movie_posters.append(fetch_poster(movie_id))  # Use poster_path
+        recommended_movie_names.append(movies.iloc[i[0]].title)
+    
+    # Prepare the response
+    resp = {
+        "recommended_movie_names": recommended_movie_names,
+        "recommended_movie_posters": recommended_movie_posters
+    }
+    return jsonify(resp)
+
 
 
 @app.route("/search", methods=["POST"])
