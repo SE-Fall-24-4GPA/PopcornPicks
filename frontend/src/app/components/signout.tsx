@@ -1,34 +1,43 @@
-'use client'
+'use client';
 
-import React from "react"
-import { Button } from "@nextui-org/react"
-import { LogOut } from "lucide-react"
-import { signOut } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import React from "react";
+import { Button } from "@nextui-org/react";
+import { LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface SignOutProps {
   className?: string;
   variant?: "flat" | "bordered" | "light" | "solid" | "shadow" | "ghost" | undefined;
   color?: "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
+  onSignOut: () => void; // Add a callback prop
 }
 
 export default function SignOut({ 
   className,
   variant = "ghost",
-  color = "danger"
+  color = "danger",
+  onSignOut // Receive the callback
 }: SignOutProps) {
     const router = useRouter();
 
     const handleSignOut = async () => {
         try {
-            const data = await signOut({
+            // Sign out the user
+            await signOut({
                 redirect: false,
                 callbackUrl: "/login"
             });
-            // Wait for the session to be destroyed before redirecting
-            setTimeout(() => {
-                router.replace("/login");
-            }, 100);
+    
+            // Clear localStorage
+            localStorage.removeItem("token");
+            localStorage.removeItem("username"); // Clear other relevant data if necessary
+    
+            // Call the onSignOut callback to update UI
+            onSignOut(); // Call the callback to notify the parent component
+    
+            // Redirect to login page
+            router.replace("/login");
         } catch (error) {
             console.error("Sign out error:", error);
         }

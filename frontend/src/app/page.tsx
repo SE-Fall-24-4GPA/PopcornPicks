@@ -3,5 +3,5 @@ import React from "react";
 import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <div className="w-full">{redirect("/landing")}</div>;
+  return <div className="w-full">{localStorage.getItem("token") && redirect("/landing")}</div>;
 }

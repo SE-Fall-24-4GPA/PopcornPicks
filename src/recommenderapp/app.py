@@ -11,6 +11,8 @@ This code is licensed under MIT license (see LICENSE for details)
 import json
 import sys
 import os
+import jwt
+import datetime
 from flask import Flask, jsonify, render_template, request, g
 from flask_cors import CORS
 import mysql.connector
@@ -36,6 +38,7 @@ from utils import add_friend
 from utils import get_wall_posts
 from utils import submit_review
 from utils import create_account
+from utils import login_to_account
 from search import Search
 from item_based import recommend_for_new_user
 search_instance = Search()
@@ -179,6 +182,33 @@ def create_acc():
         # Log the exception for debugging purposes
         app.logger.error(f"Error creating account: {str(e)}")
         return jsonify({"error": "An entry with this username or email already exists, Please try with different username."}), 500
+
+
+SECRET_KEY = "popcornpicks"  
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    if not data or "username" not in data or "password" not in data:
+        return jsonify({"error": "Invalid or incomplete data", "status": "fail"}), 400
+    
+    try:
+        resp = login_to_account(g.db, data["username"], data["password"])
+        if resp is None:
+            return jsonify({"error": "Invalid username or password", "status": "fail"}), 401
+
+        # Generate token without expiry
+        token = jwt.encode({
+            "user_id": resp,
+        }, SECRET_KEY, algorithm="HS256")
+        
+        return jsonify({"message": "Login is successful", "token": token, "status": "success"}), 200
+    
+    except Exception as e:
+        app.logger.error(f"Login failed: {str(e)}")
+        return jsonify({"error": "Login failed, please check your credentials", "status": "fail"}), 401
+
+
+
 
 
 if __name__ == "__main__":
