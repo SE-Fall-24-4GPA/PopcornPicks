@@ -1,20 +1,21 @@
 // app/page.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { APP_CONSTANTS } from "@/app/lib/constants";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { Button } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { AuthGuard } from "../components/auth/AuthGuard";
 
 export default function LandingPage() {
   const { data: session, status } = useSession();
 
   // If user is not logged in, redirect to login page
-  if (status !== "loading" && !session) {
+  console.log("status:", status)
+  console.log("key:", !localStorage.getItem("token"))
+  if (!localStorage.getItem("token")) {
     redirect("/login");
   }
 
@@ -23,7 +24,6 @@ export default function LandingPage() {
 
   return (
     <>
-      <AuthGuard>
         {/* Main Content */}
         <main className="flex-grow flex">
           <div className="max-w-3xl mx-auto space-y-8">
@@ -80,7 +80,6 @@ export default function LandingPage() {
             </div>
           </div>
         </main>
-      </AuthGuard>
     </>
   );
 }

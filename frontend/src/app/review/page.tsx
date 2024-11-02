@@ -36,7 +36,7 @@ export default function ReviewPage() {
     }
 
     try {
-      const response = await fetch('/api/search', {
+      const response = await fetch('http://localhost:5000/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export default function ReviewPage() {
     }
 
     try {
-      const response = await fetch('/api/review', {
+      const response = await fetch('http://localhost:5000/review', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
