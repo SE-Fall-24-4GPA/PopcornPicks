@@ -39,8 +39,8 @@ sys.path.remove("../../")
 app = Flask(__name__)
 app.secret_key = "secret key"
 
-movies = pickle.load(open('artifacts/movie_list.pkl', 'rb'))
-similarity = pickle.load(open('artifacts/similarity.pkl', 'rb'))
+movies = pickle.load(open('../prediction_scripts/artifacts/movie_list.pkl', 'rb'))
+similarity = pickle.load(open('../prediction_scripts/artifacts/similarity.pkl', 'rb'))
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 user = {1: None}
@@ -102,35 +102,6 @@ def search_page():
     if user[1] is not None or user[1] == "guest":
         return render_template("search_page.html")
     return render_template("login.html")
-
-
-@app.route("/predict", methods=["POST"])
-def predict():
-    """
-    Recommends movies similar to the one provided by the user.
-    """
-    data = json.loads(request.data)
-    movie = data["movie"]
-    
-    # Find the index of the movie in the movies DataFrame
-    index = movies[movies['title'] == movie].index[0]
-    distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
-    
-    # Prepare recommendations based on similarity
-    recommended_movie_names = []
-    recommended_movie_posters = []
-    for i in distances[1:6]:  # Skip the first one because it will be the same movie
-        movie_id = movies.iloc[i[0]].movie_id
-        # recommended_movie_posters.append(fetch_poster(movie_id))  # Use poster_path
-        recommended_movie_names.append(movies.iloc[i[0]].title)
-    
-    # Prepare the response
-    resp = {
-        "recommended_movie_names": recommended_movie_names,
-        "recommended_movie_posters": recommended_movie_posters
-    }
-    return jsonify(resp)
-
 
 
 @app.route("/search", methods=["POST"])
@@ -263,6 +234,7 @@ def predict():
     Recommends movies similar to the one provided by the user.
     """
     data = json.loads(request.data)
+    print(data)
     movie = data["movie"]
     
     # Find the index of the movie in the movies DataFrame
