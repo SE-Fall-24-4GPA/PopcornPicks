@@ -107,21 +107,6 @@ def search_page():
 @app.route("/predict", methods=["POST"])
 def predict():
     """
-    Predicts movie recommendations based on user ratings.
-    """
-    # data = json.loads(request.data)
-    # data1 = data["movie_list"]
-    # training_data = []
-    # for movie in data1:
-    #     movie_with_rating = {"title": movie, "rating": 5.0}
-    #     if movie_with_rating not in training_data:
-    #         training_data.append(movie_with_rating)
-    # recommendations, genres, imdb_id = recommend_for_new_user(training_data)
-    # recommendations, genres, imdb_id = recommendations[:10], genres[:10], imdb_id[:10]
-    # resp = {"recommendations": recommendations, "genres": genres, "imdb_id": imdb_id}
-    # return resp
-
-    """
     Recommends movies similar to the one provided by the user.
     """
     data = json.loads(request.data)
@@ -271,6 +256,33 @@ def feedback():
     """
     data = json.loads(request.data)
     return data
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    """
+    Recommends movies similar to the one provided by the user.
+    """
+    data = json.loads(request.data)
+    movie = data["movie"]
+    
+    # Find the index of the movie in the movies DataFrame
+    index = movies[movies['title'] == movie].index[0]
+    distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
+    
+    # Prepare recommendations based on similarity
+    recommended_movie_names = []
+    recommended_movie_posters = []
+    for i in distances[1:6]:  # Skip the first one because it will be the same movie
+        movie_id = movies.iloc[i[0]].movie_id
+        # recommended_movie_posters.append(fetch_poster(movie_id))  # Use poster_path
+        recommended_movie_names.append(movies.iloc[i[0]].title)
+    
+    # Prepare the response
+    resp = {
+        "recommended_movie_names": recommended_movie_names,
+        "recommended_movie_posters": recommended_movie_posters
+    }
+    return jsonify(resp)
 
 
 @app.route("/sendMail", methods=["POST"])
